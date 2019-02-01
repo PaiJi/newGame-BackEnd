@@ -10,10 +10,13 @@ class User
 
     public function login()
     {
-        $loginResult=app()->model('User')->login();
-        if ($loginResult['loginstus']) {
-            Session::set('userid', $loginResult['userid']);
+        $User=new \app\api\model\User();
+        $loginResult=$User->login();
+        if ($loginResult['loginStatus']) {
+            Session::set('userId', $loginResult['userId']);
+            return json($loginResult);
         } else {
+            return json($loginResult);
         }
     }
 }
