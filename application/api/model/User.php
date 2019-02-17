@@ -25,6 +25,7 @@ class User extends Model
                 if (password_verify($passWord, $user->password)) {
                     return $loginResult = [
                         'loginStatus' => '1',
+                        'userId'=>$user->id,
                         'errMsg' => ''
                     ];
                 } else {
