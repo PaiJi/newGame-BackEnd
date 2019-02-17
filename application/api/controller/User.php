@@ -30,4 +30,15 @@ class User extends Controller
             return json($loginResult);
         }
     }
+    public function register(){
+        $User=new \app\api\model\User();
+        $registerResult=$User->register();
+        if ($registerResult['registerStatus']) {
+            //Session::set('userId', $loginResult['userId']);
+            return json($registerResult);
+        } else {
+            return json($registerResult);
+        }
+    }
+
 }
