@@ -4,6 +4,7 @@ namespace app\api\model;
 
 use think\Model;
 use think\facade\Request;
+use think\facade\Session;
 
 class User extends Model
 {
