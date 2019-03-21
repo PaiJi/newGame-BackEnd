@@ -13,7 +13,7 @@ class User extends Model
         $email = Request::post('email');
         $passWord = Request::post('password');
         $validate = new \app\api\validate\User();
-        if (!$validate->scene('loginCheck')->check(['email' => $email,'password'=>$passWord])) {
+        if (!$validate->scene('loginCheck')->check(['email' => $email, 'password' => $passWord])) {
             //验证登录输入是否为邮箱
             return $loginResult = [
                 'loginStatus' => '0',
@@ -26,7 +26,7 @@ class User extends Model
                 if (password_verify($passWord, $user->password)) {
                     return $loginResult = [
                         'loginStatus' => '1',
-                        'userId'=>$user->id,
+                        'userId' => $user->id,
                         'errMsg' => ''
                     ];
                 } else {
@@ -44,17 +44,18 @@ class User extends Model
         }
     }
 
-    public function register(){
+    public function register()
+    {
         $email = Request::post('email');
         //$passWord = Request::post('password');
-        $passWord = password_hash(Request::post('password'),PASSWORD_DEFAULT);
-        $phone=Request::post('phone');
-        $gender=Request::post('gender');
-        $realName=Request::post('realname');
-        $nickname=Request::post('nickname');
+        $passWord = password_hash(Request::post('password'), PASSWORD_DEFAULT);
+        $phone = Request::post('phone');
+        $gender = Request::post('gender');
+        $realName = Request::post('realname');
+        $nickname = Request::post('nickname');
 
         $validate = new \app\api\validate\User();
-        if (!$validate->scene('registerCheck')->check(['email' => $email,'password'=>$passWord,'nickname'=>$nickname,'realname'=>$realName,'phone'=>$phone,'gender'=>$gender])) {
+        if (!$validate->scene('registerCheck')->check(['email' => $email, 'password' => $passWord, 'nickname' => $nickname, 'realname' => $realName, 'phone' => $phone, 'gender' => $gender])) {
             //验证所有传入是否符合规则
             return $registerResult = [
                 'registerStatus' => '0',
@@ -64,26 +65,26 @@ class User extends Model
             //查看是否已注册
             $user = User::where('email', $email)->find();
             if ($user) {
-                    return $registerResult= [
-                        'registerStatus' => '0',
-                        'errMsg' => '咦？这个邮箱已经在记录里啦，请尝试登录或者找回密码'
-                    ];
+                return $registerResult = [
+                    'registerStatus' => '0',
+                    'errMsg' => '咦？这个邮箱已经在记录里啦，请尝试登录或者找回密码'
+                ];
             } else {
-                $user=new User;
-                $dbinsertResult=$user->save([
-                    'username'=>$realName,
-                    'nickname'=>$nickname,
-                    'password'=>$passWord,
-                    'email'=>$email,
-                    'gender'=>$gender,
-                    'phone'=>$phone
+                $user = new User;
+                $dbinsertResult = $user->save([
+                    'username' => $realName,
+                    'nickname' => $nickname,
+                    'password' => $passWord,
+                    'email' => $email,
+                    'gender' => $gender,
+                    'phone' => $phone
                 ]);
-                if($dbinsertResult==1){
+                if ($dbinsertResult == 1) {
                     return $registerResult = [
                         'registerStatus' => '1',
                         'errMsg' => ''
                     ];
-                }else{
+                } else {
                     return $registerResult = [
                         'registerStatus' => '0',
                         'errMsg' => 'Something wrong happen.'
