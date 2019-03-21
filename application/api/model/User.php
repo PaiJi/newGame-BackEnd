@@ -93,4 +93,21 @@ class User extends Model
             };
         }
     }
+    public function checkLogin(){
+        $userId=Session::get('userId');
+        //var_dump($userId);
+        if($userId==null){
+            return $loginResult=[
+                'loginStatus'=>'0',
+                'errMsg'=>'用户未登录'
+            ];
+        }
+        else{
+            return $loginResult=[
+                'loginStatus'=>'1',
+                'userId'=>$userId,
+                'errMsg'=>''
+            ];
+        }
+    }
 }
