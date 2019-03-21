@@ -110,4 +110,18 @@ class User extends Model
             ];
         }
     }
+    public function verifyAdmin($userId){
+        $userInfo = User::where('id', $userId)->find();
+        if($userInfo['admin']==1){
+            return $verifyResult=[
+                'isAdmin'=>'1'
+            ];
+        }
+        else{
+            return $verifyResult=[
+                'isAdmin'=>'0',
+                'errMsg'=>'用户权限不足，非法操作'
+            ];
+        }
+    }
 }
