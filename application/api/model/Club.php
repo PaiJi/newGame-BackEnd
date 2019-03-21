@@ -49,7 +49,7 @@ class Club extends Model
             } else {
                 return $addClubResult = [
                     'addClubResult' => '0',
-                    'errMsg' => '添加失败，联系管理员'
+                    'errMsg' => '添加失败，联系管理员'.$userMetaAddResult['errMsg']
                 ];
             }
         }
