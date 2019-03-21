@@ -38,7 +38,10 @@ class Club extends Model
                 'belong'=>$clubBelong,
                 'img_logo'=>$imgUrl
             ]);
-            if ($dbInsertResult == 1) {
+            $dbInsertResultId=$club->id;
+            $userMeta=new UserMeta;
+            $userMetaAddResult=$userMeta->addUserMeta($clubManager,clubAdmin,$dbInsertResultId);
+            if (($dbInsertResult == 1)&&($userMetaAddResult['addUserMetaResult'])) {
                 return $addClubResult = [
                     'addClubResult' => '1',
                     'errMsg' => ''
