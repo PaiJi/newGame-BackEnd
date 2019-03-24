@@ -54,4 +54,9 @@ class Club extends Model
             }
         }
     }
+    public function clubList(){
+        //$club=new Club;
+        $result=Club::all();
+        return $result;
+    }
 }

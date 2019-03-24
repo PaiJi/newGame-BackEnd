@@ -53,5 +53,10 @@ Class Club extends Controller
 //            return json($loginResult);
 //        }
     }
+    public function clubList(){
+        $Club= new\app\api\model\Club();
+        $result=$Club->clubList();
+        return json($result);
+    }
 
 }
