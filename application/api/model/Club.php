@@ -59,4 +59,9 @@ class Club extends Model
         $result=Club::all();
         return $result;
     }
+    public function getClubDetail(){
+        $clubId=Request::get('clubid');
+        $result=Club::get($clubId);
+        return $result;
+    }
 }
