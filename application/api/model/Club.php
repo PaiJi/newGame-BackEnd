@@ -31,7 +31,6 @@ class Club extends Model
             $dbInsertResult = $club->save([
                 'name' => $clubName,
                 'intro' => $intro,
-                //'manager_user' => $clubManager,
                 'status' => $status,
                 'join_mode' => $joinMode,
                 'sort' => $clubSort,
