@@ -39,7 +39,7 @@ class Club extends Model
             ]);
             $dbInsertResultId=$club->id;
             $userMeta=new UserMeta;
-            $userMetaAddResult=$userMeta->addUserMeta($clubManager,clubAdmin,$dbInsertResultId);
+            $userMetaAddResult=$userMeta->addUserMeta($clubManager,'clubAdmin',$dbInsertResultId);
             if (($dbInsertResult == 1)&&($userMetaAddResult['addUserMetaResult'])) {
                 return $addClubResult = [
                     'addClubResult' => '1',
