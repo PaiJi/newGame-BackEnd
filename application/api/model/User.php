@@ -124,4 +124,17 @@ class User extends Model
             ];
         }
     }
+    public function whoAmI(){
+        $loginResult=$this->checkLogin();
+        if($loginResult['loginStatus']==0){
+            return $result=[
+                'LoginStatus'=>'0',
+                'errMsg'=>'您好像没没有登录哦'
+            ];
+        }elseif ($loginResult['loginStatus']==1){
+            $userInfo=User::where('id',$loginResult['userId'])->hidden(['password'])->find();
+            return $userInfo;
+        }
+
+    }
 }

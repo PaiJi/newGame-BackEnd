@@ -40,5 +40,21 @@ class User extends Controller
             return json($registerResult);
         }
     }
-
+    public function getUserInfo(){
+        $userId=Session::get('userId');
+        if($userId==null){
+            $result=[
+                'loginStatus'=>'false'
+            ];
+            return json($result);
+        }if($userId){
+            $user=new \app\api\model\User();
+            $userInfo=$user->whoAmI();
+            $result=[
+                'loginStatus'=>'true',
+                'userInfo'=>$userInfo
+            ];
+            return json($result);
+        }
+    }
 }
