@@ -110,4 +110,14 @@ Class Club extends Controller
         }
 
     }
+
+    public function getClubContact()
+    {
+        //这里应该鉴权，之后看看有没有好的方案来解决这个
+        $club = new \app\api\model\Club();
+        $result = $club->getClubContact();
+        return json($result);
+    }
+
+
 }

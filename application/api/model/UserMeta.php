@@ -10,6 +10,7 @@ class UserMeta extends Model
 {
     protected $pk = 'meta_id';
 
+    {
     public function addUserMeta($userId, $metaKey, $metaValue)
     {
         $meta = new UserMeta;

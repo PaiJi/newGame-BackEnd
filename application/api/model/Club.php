@@ -113,6 +113,27 @@ class Club extends Model
             }
         }
     }
+
+    public function getClubContact()
+    {
+        $targetClubId = Request::get('clubid');
+        $club = $this->get($targetClubId);
+        $club = UserMeta::where('meta_value', $targetClubId)->select();
+        $result = [];
+        foreach ($club as $item) {
+            //var_dump($item->user->hidden(['user'=>['username','phone','email']])->toArray()) ;
+            $tempArray = [
+                'username' => $item->user['username'],
+                'nickname' => $item->user['nickname'],
+                'phone' => $item->user['phone'],
+                'clubRole' => $item['meta_key']
+            ];
+            //var_dump($tempArray);
+            //array_push($tempArray,$item->user->visible(['profile'=>['address','phone','email']])->toArray());
+            //$tempArray[0]['clubRole']=$item['meta_key'];
+            //array_push($tempArray,$item['meta_key']);
+            array_push($result, $tempArray);
+        }
         return $result;
     }
 }
