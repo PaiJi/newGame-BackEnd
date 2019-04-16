@@ -30,4 +30,29 @@ class UserMeta extends Model
             ];
         }
     }
+    public function queryUserMetaByMultiKey($userId, $metaKey, $subMetaKey)
+    {
+        $map1 = [
+            ['user_id', '=', $userId],
+            ['meta_key', '=', $metaKey],
+        ];
+
+        $map2 = [
+            ['user_id', '=', $userId],
+            ['meta_key', '=', $subMetaKey],
+        ];
+
+        $queryUserMetaResult = Db::table('ng_user_meta')->alias('meta')->join('club c', 'meta.meta_value = c.id')
+            ->
+            whereOr([$map1, $map2])
+            ->select();
+        //$queryUserMetaResult = UserMeta::whereOr([$map1, $map2])->select();
+        if ($queryUserMetaResult == null) {
+            return $result = ['queryResult' => '0'];
+        } elseif ($queryUserMetaResult) {
+            return $result = ['queryResult' => '1',
+                'queryData' => $queryUserMetaResult
+            ];
+        }
+    }
 }
