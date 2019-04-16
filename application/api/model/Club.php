@@ -67,6 +67,40 @@ class Club extends Model
         $queryUserMetaResult = $userMeta->queryUserMetaByMultiKey($userId, 'clubMember', 'clubAdmin');
         return $queryUserMetaResult;
     }
+    public function joinClub()
+    {
+        $targetClubId = Request::get('clubid');
+        $userId = Session::get('userId');
+        $userMeta = new UserMeta;
+        $queryUserMetaResult = $userMeta->queryUserMeta($userId, 'clubMember', $targetClubId);
+        if ($queryUserMetaResult['queryResult'] == 1) {
+            return $result = ['joinClubResultCode' => '0', 'code' => '42', 'errMsg' => '您已经是俱乐部成员了！'];
+        } elseif ($queryUserMetaResult['queryResult'] == 0) {
+            $clubJoinMode = Db::table('ng_club')->where('id', $targetClubId)->value('join_mode');
+            if ($clubJoinMode == '2') {
+                return $result = ['joinClubResultCode' => '0',
+                    'clubRequest' => '2',
+                    'errMsg' => '需要邀请才可以加入俱乐部哦'];
+                //这里还差一段逻辑来判断如果有邀请怎么处理。
+            }
+            if ($clubJoinMode == '0') {
+                return $result = ['joinClubResultCode' => '0', 'clubRequest' => '0', 'errMsg' => '俱乐部暂时不纳新。'];
+            }
+            if ($clubJoinMode == '3') {
+                //执行加入社团逻辑
+                $joinClubResult = $userMeta->addUserMeta($userId, 'clubMember', $targetClubId);
+                if ($joinClubResult['addUserMetaResult'] == 1) {
+                    return $result = ['joinClubResultCode' => '1', 'clubRequest' => '3', 'errMsg' => ''];
+                } else {
+                    return $joinClubResult;
+                }
+            }
+            if ($clubJoinMode == '1') {
+                //是填表逻辑
+                echo '加入模式1';
+            }
+        }
+    }
         return $result;
     }
 }

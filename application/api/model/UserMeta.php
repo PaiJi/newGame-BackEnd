@@ -55,4 +55,17 @@ class UserMeta extends Model
             ];
         }
     }
+
+    public function queryUserMeta($userId, $metaKey, $meta_value)
+    {
+        $queryUserMetaResult = UserMeta::where(['user_id' => $userId, 'meta_key' => $metaKey, 'meta_value' => $meta_value])->find();
+        if ($queryUserMetaResult == null) {
+            return $result = ['queryResult' => '0'];
+        } elseif ($queryUserMetaResult) {
+            return $result = ['queryResult' => '1',
+                'queryData' => $queryUserMetaResult
+            ];
+        }
+
+    }
 }
