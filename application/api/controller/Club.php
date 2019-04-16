@@ -27,21 +27,20 @@ Class Club extends Controller
     public function addClub()
     {
         $Club = new \app\api\model\Club();
-        $User=new \app\api\model\User();
-        $loginResult=$User->checkLogin();
-        if($loginResult['loginStatus']==0){
+        $User = new \app\api\model\User();
+        $loginResult = $User->checkLogin();
+        if ($loginResult['loginStatus'] == 0) {
             return json($loginResult);
-        }else{
-            $verifyAdminResult=$User->verifyAdmin($loginResult['userId']);
-            if($verifyAdminResult['isAdmin']==1){
-                $addClubResult=$Club->addClub();
-                if($addClubResult['addClubResult']==1){
+        } else {
+            $verifyAdminResult = $User->verifyAdmin($loginResult['userId']);
+            if ($verifyAdminResult['isAdmin'] == 1) {
+                $addClubResult = $Club->addClub();
+                if ($addClubResult['addClubResult'] == 1) {
                     return json($addClubResult);
-                }else{
+                } else {
                     return json($addClubResult);
                 }
-            }
-            else{
+            } else {
                 return json($verifyAdminResult);
             }
         }
@@ -86,6 +85,7 @@ Class Club extends Controller
             return json($result);
         }
     }
+
     public function joinclub()
     {
         $user = new \app\api\model\User();
