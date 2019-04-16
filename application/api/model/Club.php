@@ -8,6 +8,18 @@ use think\facade\Session;
 
 class Club extends Model
 {
+    public function getStatusAttr($value)
+    {
+        $status = [0 => '已注销', 1 => '正常运营', 2 => '筹备中', 3 => '运营异常'];
+        return $status[$value];
+    }
+
+    public function getJoinModeAttr($value)
+    {
+        $join_mode = [0 => '不允许新成员', 1 => '人工审核', 2 => '仅限邀请', 3 => '无限制'];
+        return $join_mode[$value];
+    }
+
     public function addClub()
     {
         $clubName = Request::post('clubName');
