@@ -57,4 +57,23 @@ class User extends Controller
             return json($result);
         }
     }
+    public function logout(){
+        $user=new \app\api\model\User();
+        $loginStatus=$user->checkLogin();
+        if($loginStatus['loginStatus']==0){
+             $result=[
+                'execResult'=>'0',
+                'errMsg'=>'您好像没没有登录哦,所以我要注销什么呢？'
+            ];
+             return json($result);
+        }
+        if($loginStatus['loginStatus']==1){
+            Session::delete('userId');
+             $result=[
+                'execResult'=>'1',
+                'errMsg'=>'注销成功！'
+            ];
+             return json($result);
+        }
+    }
 }
