@@ -64,15 +64,21 @@ class Club extends Model
         }
         return $result;
     }
-    public function getClubDetail(){
-        $clubId=Request::get('clubid');
-        $result=Club::get($clubId);
+
     public function getMyClubList($userId)
     {
         $userMeta = new UserMeta;
         $queryUserMetaResult = $userMeta->queryUserMetaByMultiKey($userId, 'clubMember', 'clubAdmin');
         return $queryUserMetaResult;
     }
+
+    public function getClubDetail()
+    {
+        $clubId = Request::get('clubid');
+        $result = Club::get($clubId);
+        return $result;
+    }
+
     public function joinClub()
     {
         $targetClubId = Request::get('clubid');

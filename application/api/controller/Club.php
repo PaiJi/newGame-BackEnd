@@ -60,9 +60,11 @@ Class Club extends Controller
         $result = $Club->clubList();
         return json($result);
     }
-    public function getClubDetail(){
-        $Club=new \app\api\model\Club();
-        $result=$Club->getclubDetail();
+
+    public function getClubDetail()
+    {
+        $Club = new \app\api\model\Club();
+        $result = $Club->getclubDetail();
         return json($result);
     }
 
