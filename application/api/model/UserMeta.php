@@ -10,7 +10,16 @@ class UserMeta extends Model
 {
     protected $pk = 'meta_id';
 
+    public function user()
     {
+        return $this->hasOne('User', 'id', 'user_id');
+    }
+
+    public function club()
+    {
+        return $this->hasOne('Club', 'id', 'meta_value');
+    }
+
     public function addUserMeta($userId, $metaKey, $metaValue)
     {
         $meta = new UserMeta;
