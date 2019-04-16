@@ -53,9 +53,15 @@ class Club extends Model
             }
         }
     }
-    public function clubList(){
+
+    public function clubList()
+    {
         //$club=new Club;
-        $result=Club::all();
+        if (Request::has('option', 'get') && Request::has('value', 'get')) {
+            $result = Club::where(Request::param('option'), Request::param('value'))->select();
+        } else {
+            $result = Club::all();
+        }
         return $result;
     }
     public function getClubDetail(){
