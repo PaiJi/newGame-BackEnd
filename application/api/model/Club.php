@@ -5,9 +5,16 @@ namespace app\api\model;
 use think\Model;
 use think\facade\Request;
 use think\facade\Session;
+use think\Db;
 
 class Club extends Model
 {
+
+    public function users()
+    {
+        return $this->hasManyThrough('User', 'UserMeta', 'meta_value', 'id', 'id');
+    }
+
     public function getStatusAttr($value)
     {
         $status = [0 => '已注销', 1 => '正常运营', 2 => '筹备中', 3 => '运营异常'];
@@ -146,5 +153,17 @@ class Club extends Model
             array_push($result, $tempArray);
         }
         return $result;
+    }
+
+    public function checkUserIsClubAdmin($userId,$clubId)
+    {
+        $userMeta = new UserMeta;
+        $queryUserMetaResult = $userMeta->queryUserMeta($userId, 'clubAdmin', $clubId);
+        if ($queryUserMetaResult['queryResult'] == 1) {
+            return $result = ['isAdmin' => '1'];
+        }
+        else{
+            return $result=['isAdmin'=>'0'];
+        }
     }
 }
