@@ -87,7 +87,9 @@ Class Activity extends Controller
 
     public function activityList()
     {
-
+        $Activity = new\app\api\model\Activity();
+        $result = $Activity->activityList();
+        return json($result);
     }
 
     public function activityDetail()
