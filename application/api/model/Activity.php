@@ -82,4 +82,23 @@ class Activity extends Model
             ];
         }
     }
+    public function deleteActivity($activityId)
+    {
+        //$activity = Activity::get($activityId);
+        $activity=new Activity;
+        $dbInsertResult=$activity->save([
+            'unavailable'  => '1'
+        ],['id' => $activityId]);
+        if (($dbInsertResult == 1)) {
+            return $editActivityResult = [
+                'deleteActivityResult' => '1',
+                'errMsg' => ''
+            ];
+        } else {
+            return $editActivityResult = [
+                'deleteActivityResult' => '0',
+                'errMsg' => '删除失败，联系管理员'
+            ];
+        }
+    }
 }

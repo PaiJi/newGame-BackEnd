@@ -61,7 +61,28 @@ Class Activity extends Controller
 
     public function deleteActivity()
     {
-
+        //此处应该有判空检测
+        $activityId=Request::get('activityId');
+        $Club = new \app\api\model\Club();
+        $User = new \app\api\model\User();
+        $Activity = new \app\api\model\Activity();
+        $clubId=$Activity->where('id',$activityId)->value('clubid');
+        $loginResult = $User->checkLogin();
+        if ($loginResult['loginStatus'] == 0) {
+            return json($loginResult);//未登录用户返回错误json
+        } else {
+            $verifyClubAdminResult = $Club->checkUserIsClubAdmin($loginResult['userId'], $clubId);//检查是否是社团管理员。
+            if ($verifyClubAdminResult['isAdmin'] == 1) {
+                $deleteActivityResult = $Activity->deleteActivity($activityId);
+                if ($deleteActivityResult['deleteActivityResult'] == 1) {
+                    return json($deleteActivityResult);//一般返回执行成功json
+                } else {
+                    return json($deleteActivityResult);//返回出错的json
+                }
+            } else {
+                return json($verifyClubAdminResult);//非管理员返回json
+            }
+        }
     }
 
     public function activityList()
