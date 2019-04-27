@@ -110,4 +110,13 @@ class Activity extends Model
         }
         return $result;
     }
+    public function activityDetail($activityId)
+    {
+        $result = Activity::get($activityId);
+        return $result;
+    }
+    public function getMyAcitivtyList()
+    {
+
+    }
 }

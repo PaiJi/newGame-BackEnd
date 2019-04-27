@@ -94,7 +94,10 @@ Class Activity extends Controller
 
     public function activityDetail()
     {
-
+        $Activity = new\app\api\model\Activity();
+        $activityId=Request::get('activityId');
+        $result = $Activity->activityDetail($activityId);
+        return json($result);
     }
 
     public function getMyActivity()
