@@ -36,11 +36,11 @@ Class Activity extends Controller
     public function editActivity()
     {
         //此处应该有判空检测
-        $clubId = Request::get('clubid');
         $activityId=Request::get('activityId');
         $Club = new \app\api\model\Club();
         $User = new \app\api\model\User();
         $Activity = new \app\api\model\Activity();
+        $clubId=$Activity->where('id',$activityId)->value('clubid');
         $loginResult = $User->checkLogin();
         if ($loginResult['loginStatus'] == 0) {
             return json($loginResult);//未登录用户返回错误json
