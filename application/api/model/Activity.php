@@ -119,4 +119,9 @@ class Activity extends Model
     {
 
     }
+    public function joinActivity($userId,$activityId)
+    {
+
+    }
+
 }

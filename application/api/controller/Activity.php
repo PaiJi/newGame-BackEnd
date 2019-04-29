@@ -102,12 +102,41 @@ Class Activity extends Controller
 
     public function getMyActivity()
     {
-
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $Activity = new \app\api\model\Activity();
+            $result = $Activity->getMyAcitivtyList($loginCheck['userId']);
+            return json($result);
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'getMyActivityListResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
     }
 
     public function joinActivity()
     {
-
+        $activityId=Request::get('activityId');
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $Activity = new \app\api\model\Activity();
+            $result = $Activity->joinActivity($loginCheck['userId'],$activityId);
+            return json($result);
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'getMyActivityListResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
     }
     public function exitActivity()
     {

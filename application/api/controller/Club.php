@@ -110,6 +110,10 @@ Class Club extends Controller
         }
 
     }
+    public function exitClub()
+    {
+
+    }
 
     public function getClubContact()
     {
