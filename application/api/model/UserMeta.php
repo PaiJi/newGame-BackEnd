@@ -5,6 +5,9 @@ namespace app\api\model;
 use think\Model;
 use think\facade\Request;
 use think\facade\Session;
+use think\model\Collection;
+use think\db;
+
 
 class UserMeta extends Model
 {
@@ -40,6 +43,19 @@ class UserMeta extends Model
             ];
         }
     }
+
+    public function queryUserMetaByKey($userId, $metaKey)
+    {
+        $queryUserMetaResult = UserMeta::where(['user_id' => $userId, 'meta_key' => $metaKey])->find();
+        if ($queryUserMetaResult == null) {
+            return $result = ['queryResult' => '0'];
+        } elseif ($queryUserMetaResult) {
+            return $result = ['queryResult' => '1',
+                'queryData' => $queryUserMetaResult
+            ];
+        }
+    }
+
     public function queryUserMetaByMultiKey($userId, $metaKey, $subMetaKey)
     {
         $map1 = [
