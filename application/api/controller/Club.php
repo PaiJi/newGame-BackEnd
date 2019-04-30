@@ -86,6 +86,26 @@ Class Club extends Controller
         }
     }
 
+    public function getMyAdminClubList()
+    {
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $club = new \app\api\model\Club();
+            $result = $club->getMyAdminClubList($loginCheck['userId']);
+            return json($result);
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'getMyClubListResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
+    }
+
+
     public function joinclub()
     {
         $user = new \app\api\model\User();
