@@ -90,6 +90,23 @@ class Club extends Model
         return $queryUserMetaResult;
     }
 
+    public function getMyAdminClubList($userId)
+    {
+        $userMeta = new UserMeta;
+        $queryUserMetaResult = Db::table('ng_user_meta')->alias('meta')->join('club c', 'meta.meta_value = c.id')
+            ->
+            where('user_Id',$userId)->where('meta_key','clubAdmin')
+            ->select();
+        //$queryUserMetaResult = UserMeta::whereOr([$map1, $map2])->select();
+        if ($queryUserMetaResult == null) {
+            return $result = ['queryResult' => '0'];
+        } elseif ($queryUserMetaResult) {
+            return $result = ['queryResult' => '1',
+                'queryData' => $queryUserMetaResult
+            ];
+        }
+    }
+
     public function getClubDetail()
     {
         $clubId = Request::get('clubid');
