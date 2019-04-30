@@ -82,13 +82,14 @@ class Activity extends Model
             ];
         }
     }
+
     public function deleteActivity($activityId)
     {
         //$activity = Activity::get($activityId);
-        $activity=new Activity;
-        $dbInsertResult=$activity->save([
-            'unavailable'  => '1'
-        ],['id' => $activityId]);
+        $activity = new Activity;
+        $dbInsertResult = $activity->save([
+            'unavailable' => '1'
+        ], ['id' => $activityId]);
         if (($dbInsertResult == 1)) {
             return $editActivityResult = [
                 'deleteActivityResult' => '1',
@@ -101,6 +102,7 @@ class Activity extends Model
             ];
         }
     }
+
     public function activityList()
     {
         if (Request::has('option', 'get') && Request::has('value', 'get')) {
@@ -110,18 +112,51 @@ class Activity extends Model
         }
         return $result;
     }
+
     public function activityDetail($activityId)
     {
         $result = Activity::get($activityId);
         return $result;
     }
-    public function getMyAcitivtyList()
-    {
 
+    public function getMyActivityList($userId)
+    {
+        $map1 = [
+            ['user_id', '=', $userId]
+        ];
+        $queryUserMetaResult = Db::table('ng_activity_meta')->alias('meta')->join('activity a', 'meta.activity_id = a.id')
+            ->
+            where('user_id', $userId)->where('meta.unavailable', '0')
+            ->select();
+        if ($queryUserMetaResult == null) {
+            return $result = ['queryResult' => '0'];
+        } elseif ($queryUserMetaResult) {
+            return $result = ['queryResult' => '1',
+                'queryData' => $queryUserMetaResult
+            ];
+        }
     }
-    public function joinActivity($userId,$activityId)
-    {
 
+    public function joinActivity($userId, $activityId)
+    {
+        $activity = new ActivityMeta;
+        //$queryResult=$activity->where(['user_id'])
+        $queryResult = Db::table('ng_activity_meta')->where(['user_id' => $userId, 'activity_id' => $activityId])->select();
+        if ($queryResult) {
+            return $result = [
+                'queryResult' => '0',
+                'errMsg' => '您已加入该活动！'
+            ];
+        } else {
+            $activity->save([
+                'user_id' => $userId,
+                'activity_id' => $activityId
+            ]);
+            return $result = [
+                'queryResult' => '1',
+                'errMsg' => ''
+            ];
+        }
     }
 
     public function exitActivity($userId, $activityId)
