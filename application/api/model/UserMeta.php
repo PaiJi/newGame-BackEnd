@@ -46,7 +46,7 @@ class UserMeta extends Model
 
     public function queryUserMetaByKey($userId, $metaKey)
     {
-        $queryUserMetaResult = UserMeta::where(['user_id' => $userId, 'meta_key' => $metaKey])->find();
+        $queryUserMetaResult = UserMeta::where(['user_id' => $userId, 'meta_key' => $metaKey])->select();
         if ($queryUserMetaResult == null) {
             return $result = ['queryResult' => '0'];
         } elseif ($queryUserMetaResult) {
