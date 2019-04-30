@@ -106,7 +106,7 @@ Class Activity extends Controller
         $loginCheck = $userStatus->checkLogin();
         if ($loginCheck['loginStatus'] == '1') {
             $Activity = new \app\api\model\Activity();
-            $result = $Activity->getMyAcitivtyList($loginCheck['userId']);
+            $result = $Activity->getMyActivityList($loginCheck['userId']);
             return json($result);
         };
         if ($loginCheck['loginStatus'] == '0') {
@@ -140,6 +140,21 @@ Class Activity extends Controller
     }
     public function exitActivity()
     {
-
+        $activityId=Request::get('activityId');
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $Activity = new \app\api\model\Activity();
+            $result = $Activity->exitActivity($loginCheck['userId'],$activityId);
+            return json($result);
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'getMyActivityListResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
     }
 }

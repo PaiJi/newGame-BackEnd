@@ -124,4 +124,23 @@ class Activity extends Model
 
     }
 
+    public function exitActivity($userId, $activityId)
+    {
+        $activity = new ActivityMeta;
+        $queryResult = Db::table('ng_activity_meta')->where(['user_id' => $userId, 'activity_id' => $activityId])->select();
+        if ($queryResult) {
+            $activity->save([
+                'unavailable' => 1
+            ], ['id' => $queryResult['0']['id']]);
+            return $result = [
+                'queryResult' => '1',
+                'errMsg' => '您已退出该活动！'
+            ];
+        } else {
+            return $result = [
+                'queryResult' => '0',
+                'errMsg' => '您没有参加这个活动'
+            ];
+        }
+    }
 }
