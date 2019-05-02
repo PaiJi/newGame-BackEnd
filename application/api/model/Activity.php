@@ -5,6 +5,7 @@ namespace app\api\model;
 use think\Model;
 use think\facade\Request;
 use think\facade\Session;
+use think\helper\Time;
 use think\Db;
 
 class Activity extends Model
