@@ -108,7 +108,7 @@ class Activity extends Model
         if (Request::has('option', 'get') && Request::has('value', 'get')) {
             $result = Activity::where(Request::param('option'), Request::param('value'))->select();
         } else {
-            $result = Activity::where('unavailable', '0')->find();//只获取没有被软删除的活动
+            $result = Activity::where('unavailable', '0')->select();//只获取没有被软删除的活动
         }
         return $result;
     }
