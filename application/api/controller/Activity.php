@@ -157,4 +157,23 @@ Class Activity extends Controller
             return json($result);
         }
     }
+    public function checkinActivity()
+    {
+        $activityId=Request::get('activityId');
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $Activity = new \app\api\model\Activity();
+            $result = $Activity->checkinActivity($loginCheck['userId'],$activityId);
+            return json($result);
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'getMyActivityListResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
+    }
 }

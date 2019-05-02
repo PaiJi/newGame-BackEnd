@@ -178,4 +178,54 @@ class Activity extends Model
             ];
         }
     }
+    public function checkinActivity($userId, $activityId)
+    {
+        $enable_checkin=Activity::where('id',$activityId)->value('enable_checkin');
+        if($enable_checkin==1){
+            $time_now=time();
+            $start_time=Activity::where('id',$activityId)->value('start_time');
+            $end_time=Activity::where('id',$activityId)->value('end_time');
+            if($time_now<strtotime($start_time)){
+                return $result = [
+                    'queryResult' => '0',
+                    'errMsg' => '不要心急，活动还没有开始呢！'
+                ];
+            }
+            if(($time_now>=strtotime($start_time))&&($time_now<=strtotime($end_time))){
+                $checkin=new ActivityCheckin;
+                $checkinStatus=$checkin->where('user_id',$userId)->where('activity_id',$activityId)->find();
+                if($checkinStatus){
+                    return $result = [
+                        'queryResult' => '0',
+                        'errMsg' => '您已经签到过了，请不要重复操作~'
+                    ];
+                }
+                if($checkinStatus==null){
+                    $clubId=Activity::where('id',$activityId)->value('clubid');
+                    $checkin->save([
+                        'club_id'  =>  $clubId,
+                        'user_id' =>  $userId,
+                        'activity_id'=>$activityId
+                    ]);
+                    return $result = [
+                        'queryResult' => '1',
+                        'errMsg' => '签到成功，感谢参加本次活动。'
+                    ];
+                }
+
+            }
+            if($time_now>strtotime($end_time)){
+                return $result = [
+                    'queryResult' => '0',
+                    'errMsg' => '活动已结束，下次早点来签到啦！'
+                ];
+            }
+            var_dump($time_now);
+        }else{
+            return $result = [
+                'queryResult' => '0',
+                'errMsg' => '该活动不需要签到或者该活动不存在'
+            ];
+        }
+    }
 }
