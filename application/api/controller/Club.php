@@ -142,6 +142,15 @@ Class Club extends Controller
         $result = $club->getClubContact();
         return json($result);
     }
+    public function getQuestion(){
+        $targetClubId = Request::get('clubId');
+        $list = Question::where('club_id',$targetClubId)
+            ->where('status',1)
+            ->order('sort')
+            ->select();
+        //$list=Question::get('135');
+        return $list;
+    }
 
 
 }
