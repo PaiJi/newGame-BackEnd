@@ -8,8 +8,10 @@
 
 namespace app\api\controller;
 
+use app\api\model\Question;
 use think\Controller;
 use think\facade\Session;
+use think\facade\Request;
 
 Class Club extends Controller
 {
@@ -150,6 +152,25 @@ Class Club extends Controller
             ->select();
         //$list=Question::get('135');
         return $list;
+    }
+    public function updateQuestion(){
+        $targetClubId=Request::get('clubId');
+        $questionData=Request::post('data');
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $club = new \app\api\model\Club();
+            $result = $club->updateQuestion($targetClubId,$questionData);
+            return json($result);
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'getMyActivityListResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
     }
 
 

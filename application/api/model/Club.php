@@ -183,4 +183,37 @@ class Club extends Model
             return $result=['isAdmin'=>'0'];
         }
     }
+
+    public function updateQuestion($targetClubId,$questionData){
+        foreach ($questionData as $item)
+        {
+            if($item['type']=='radio'||$item['type']=='checkbox'){
+                $item['answer']=json_encode($item['answer']);
+            }
+            $question=Question::get($item['id']);
+            if($question){
+                $questionQuery=new Question();
+                $questionQuery->save([
+                    'club_id'=>$targetClubId,
+                    'type'=>$item['type'],
+                    'msg'=>$item['msg'],
+                    'answer'=>$item['answer'],
+                    'required'=>$item['required'],
+                    'sort'=>$item['sort']
+                ],['id'=>$item['id']]);
+            }else{
+                $questionQuery=new Question();
+                $questionQuery->save([
+                    'club_id'=>$targetClubId,
+                    'type'=>$item['type'],
+                    'msg'=>$item['msg'],
+                    'answer'=>$item['answer'],
+                    'required'=>$item['required'],
+                    'sort'=>$item['sort']
+                ]);
+            }
+        }
+
+        return $result=['queryResult'=>'1'];
+    }
 }
