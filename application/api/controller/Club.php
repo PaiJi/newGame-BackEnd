@@ -178,11 +178,15 @@ Class Club extends Controller
     public function updateQuestion(){
         $targetClubId=Request::get('clubId');
         $questionData=Request::post('data');
+    public function updateQuestion()
+    {
+        $targetClubId = Request::get('clubId');
+        $questionData = Request::post('data');
         $userStatus = new \app\api\model\User();
         $loginCheck = $userStatus->checkLogin();
         if ($loginCheck['loginStatus'] == '1') {
             $club = new \app\api\model\Club();
-            $result = $club->updateQuestion($targetClubId,$questionData);
+            $result = $club->updateQuestion($targetClubId, $questionData);
             return json($result);
         };
         if ($loginCheck['loginStatus'] == '0') {

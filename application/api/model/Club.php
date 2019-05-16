@@ -235,32 +235,39 @@ class Club extends Model
         {
             if($item['type']=='radio'||$item['type']=='checkbox'){
                 $item['answer']=json_encode($item['answer']);
+    public function updateQuestion($targetClubId, $questionData)
+    {
+        foreach ($questionData as $item) {
+            if ($item['type'] == 'radio' || $item['type'] == 'checkbox') {
+                $item['answer'] = json_encode($item['answer']);
             }
-            $question=Question::get($item['id']);
-            if($question){
-                $questionQuery=new Question();
+            $question = Question::get($item['id']);
+            if ($question) {
+                $questionQuery = new Question();
                 $questionQuery->save([
-                    'club_id'=>$targetClubId,
-                    'type'=>$item['type'],
-                    'msg'=>$item['msg'],
-                    'answer'=>$item['answer'],
-                    'required'=>$item['required'],
-                    'sort'=>$item['sort']
-                ],['id'=>$item['id']]);
-            }else{
-                $questionQuery=new Question();
+                    'club_id' => $targetClubId,
+                    'type' => $item['type'],
+                    'msg' => $item['msg'],
+                    'answer' => $item['answer'],
+                    'required' => $item['required'],
+                    'sort' => $item['sort']
+                ], ['id' => $item['id']]);
+            } else {
+                $questionQuery = new Question();
                 $questionQuery->save([
-                    'club_id'=>$targetClubId,
-                    'type'=>$item['type'],
-                    'msg'=>$item['msg'],
-                    'answer'=>$item['answer'],
-                    'required'=>$item['required'],
-                    'sort'=>$item['sort']
+                    'club_id' => $targetClubId,
+                    'type' => $item['type'],
+                    'msg' => $item['msg'],
+                    'answer' => $item['answer'],
+                    'required' => $item['required'],
+                    'sort' => $item['sort']
                 ]);
             }
         }
 
-        return $result=['queryResult'=>'1'];
+        return $result = ['queryResult' => '1'];
+    }
+
     public function submitApplyForm($userId, $targetClubId, $applyForm)
     {
         $clubQuery = new UserMeta();
