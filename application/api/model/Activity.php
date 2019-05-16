@@ -248,4 +248,12 @@ class Activity extends Model
             ->select();
         return $queryUserMetaResult;
     }
+    public function activityCheckinList($activityId)
+    {
+        $queryUserMetaResult = Db::table('ng_activity_checkin')->alias('meta')->join('ng_user u', 'meta.user_id = u.id')
+            ->
+            where('activity_id', $activityId)
+            ->select();
+        return $queryUserMetaResult;
+    }
 }
