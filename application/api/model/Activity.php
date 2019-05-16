@@ -18,6 +18,7 @@ class Activity extends Model
         $maxPeople = Request::post('maxPeople');
         $activityType = Request::post('activityType');
         $status = Request::post('status');
+        $enable_checkin = Request::post(('enable_checkin'));
         $startTime = Request::post('startTime');
         $endTime = Request::post('endTime');
         //这里应该对所有变量做判空检查
@@ -31,6 +32,7 @@ class Activity extends Model
             'type' => $activityType,
             'status' => $status,
             'create_user_id' => $createUserId,
+            'enable_checkin' => $enable_checkin,
             'start_time' => $startTime,
             'end_time' => $endTime
         ]);
@@ -55,6 +57,7 @@ class Activity extends Model
         $maxPeople = Request::post('maxPeople');
         $activityType = Request::post('activityType');
         $status = Request::post('status');
+        $enable_checkin = Request::post(('enable_checkin'));
         $startTime = Request::post('startTime');
         $endTime = Request::post('endTime');
         //这里应该对所有变量做判空检查
@@ -68,6 +71,7 @@ class Activity extends Model
             'type' => $activityType,
             'status' => $status,
             'create_user_id' => $createUserId,
+            'enable_checkin' => $enable_checkin,
             'start_time' => $startTime,
             'end_time' => $endTime
         ], ['id' => $activityId]);
