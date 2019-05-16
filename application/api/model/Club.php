@@ -261,6 +261,45 @@ class Club extends Model
         }
 
         return $result=['queryResult'=>'1'];
+    public function submitApplyForm($userId, $targetClubId, $applyForm)
+    {
+        $clubQuery = new UserMeta();
+        $clubQueryResult = $clubQuery->where('user_id', $userId)->where('meta_key', 'clubMember')->where('meta_value',$targetClubId)->find();
+        if ($clubQueryResult) {
+            return $result = ['submitApplyFormResultCode' => '0', 'errMsg' => '您已经是社团成员，表单不会被记录'];
+        };
+        $applyQuery = new Apply();
+        $applyQueryResult = $applyQuery->where('user_id', $userId)->where('club_id', $targetClubId)->find();
+        if ($applyQueryResult) {
+            return $result = ['submitApplyFormResultCode' => '0', 'errMsg' => '您已经有一份申请正在处理中，请不要重新提交内容'];
+        }
+        $clubModeQueryResult = Club::get($targetClubId)->value('join_mode');
+        if ($clubModeQueryResult == '1') {
+            $applyQuery = new Apply();
+            $applyQuery->save([
+                'club_id' => $targetClubId,
+                'user_id' => $userId,
+                'status' => 1
+            ]);
+            $applyId = $applyQuery->id;
+            foreach ($applyForm as $item) {
+                if ($item['type'] == 'checkbox') {
+                    $item['answer'] = json_encode($item['answer']);
+                }
+                $applyContentQuery = new ApplyContent();
+                $applyContentQuery->save([
+                    'apply_id' => $applyId,
+                    'question_id'=>$item['question_id'],
+                    'type' => $item['type'],
+                    'question' => $item['question'],
+                    'answer' => $item['answer']
+                ]);
+            }
+            return $result = ['submitApplyFormResultCode' => '1', 'errMsg' => ''];
+        }else{
+            return $result = ['submitApplyFormResultCode' => '0', 'errMsg' => '这个社团不需要提交表单'];
+        }
+    }
     public function getApplyList($clubId){
         $apply=new Apply();
         $user=new User();

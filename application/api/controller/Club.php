@@ -194,6 +194,26 @@ Class Club extends Controller
             return json($result);
         }
     }
+    public function submitApplyForm()
+    {
+        $targetClubId = Request::get('clubId');
+        $applyForm=Request::post('answerList');
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $club = new \app\api\model\Club();
+            $result = $club->submitApplyForm($loginCheck['userId'],$targetClubId, $applyForm);
+            return json($result);
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'submitApplyFormResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
+    }
 
     public function getApplyList(){
         $targetClubId=Request::get('clubId');
