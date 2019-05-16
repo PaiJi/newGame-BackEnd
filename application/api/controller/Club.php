@@ -55,6 +55,28 @@ Class Club extends Controller
 //        }
     }
 
+    public function updateClub()
+    {
+        $Club = new \app\api\model\Club();
+        $User = new \app\api\model\User();
+        $loginResult = $User->checkLogin();
+        if ($loginResult['loginStatus'] == 0) {
+            return json($loginResult);
+        } else {
+            $verifyAdminResult = $User->verifyAdmin($loginResult['userId']);
+            if ($verifyAdminResult['isAdmin'] == 1) {
+                $updateClubResult = $Club->updateClub();
+                if ($updateClubResult['updateClubResult'] == 1) {
+                    return json($updateClubResult);
+                } else {
+                    return json($updateClubResult);
+                }
+            } else {
+                return json($verifyAdminResult);
+            }
+        }
+    }
+
     public function clubList()
     {
         $Club = new\app\api\model\Club();

@@ -72,6 +72,52 @@ class Club extends Model
         }
     }
 
+    public function updateClub()
+    {
+        $clubId = Request::post('clubId');
+        $clubName = Request::post('clubName');
+        $imgUrl = Request::post('imgUrl');
+        $intro = Request::post('intro');
+        $clubBelong = Request::post('clubBelong');
+        $clubSort = Request::post('clubSort');
+        $clubManager = Request::post('clubAdmin');
+        $joinMode = Request::post('joinMode');
+        $status = Request::post('status');
+        //这里应该对所有变量做判空检查
+        $club = Club::where('id', $clubId)->find();
+        //这里检查一下这个用户是否是这个社团的管理员
+        if ($club) {
+            $club = new Club;
+            $dbInsertResult = $club->save([
+                'name' => $clubName,
+                'intro' => $intro,
+                'status' => $status,
+                'join_mode' => $joinMode,
+                'sort' => $clubSort,
+                'belong' => $clubBelong,
+                'img_logo' => $imgUrl
+            ], ['id' => $clubId]);
+            if ($dbInsertResult == 1) {
+                return $updateClubResult = [
+                    'updateClubResult' => '1',
+                    'errMsg' => ''
+                ];
+            } else {
+                return $updateClubResult = [
+                    'updateClubResult' => '0',
+                    'errMsg' => '更新社团信息失败，联系管理员'
+                ];
+            }
+
+        } else {
+            return $updateClubResult = [
+                'updateClubResult' => '0',
+                'errMsg' => '指定社团信息不存在？请检查输入。'
+            ];
+        }
+    }
+
+
     public function clubList()
     {
         //$club=new Club;
