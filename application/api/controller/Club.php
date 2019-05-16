@@ -8,7 +8,8 @@
 
 namespace app\api\controller;
 
-use app\api\model\Question;
+//use app\api\model\Apply;
+//use app\api\model\Question;
 use think\Controller;
 use think\facade\Session;
 use think\facade\Request;
