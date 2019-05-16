@@ -316,4 +316,22 @@ class Club extends Model
         $applyContentResult=$applyContent->where('apply_id',$applyId)->select();
         return $applyContentResult;
     }
+    public function handleApply($applyId,$handleContent,$userId,$clubId){
+        $apply=new Apply();
+        if($handleContent=='true'){
+            $apply->save([
+                'status'=>'2'
+            ],['id'=>$applyId]);
+            $meta=new UserMeta();
+            $meta->addUserMeta($userId,'clubMember',$clubId);
+            return $handleApplyResult=['handleApplyResultCode'=>'1'];
+        }
+        if($handleContent=='false'){
+            $apply->save([
+                'status'=>'0'
+            ],['id'=>$applyId]);
+            return $handleApplyResult=['handleApplyResultCode'=>'1'];
+        }
+        return $handleApplyResult=['handleApplyResultCode'=>'0'];
+    }
 }

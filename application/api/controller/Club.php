@@ -265,4 +265,32 @@ Class Club extends Controller
             return json($result);
         }
     }
+    public function handleApply()
+    {
+        $applyId=Request::get('applyId');
+        $handleContent=Request::post('handleContent');
+        $Club=new \app\api\model\Club();
+        $apply=new Apply();
+        $targetClubId=$apply->where('id',$applyId)->value('club_id');
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $verifyClubAdminResult = $Club->checkUserIsClubAdmin($loginCheck['userId'], $targetClubId);
+            if ($verifyClubAdminResult['isAdmin'] == 1){
+                $result = $Club->handleApply($applyId,$handleContent,$loginCheck['userId'], $targetClubId);
+                return json($result);
+            }else{
+                $result=['handleApplyResultCode'=>'0','errMsg'=>'您不是该社团管理员'];
+                return json($result);
+            }
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'handleApplyResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
+    }
 }
