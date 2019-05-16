@@ -205,4 +205,23 @@ Class Activity extends Controller
             return json($result);
         }
     }
+    public function activityApplyList()
+    {
+        $activityId=Request::get('activityId');
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $Activity = new \app\api\model\Activity();
+            $result = $Activity->activityApplyList($activityId);
+            return json($result);
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'getActivityApplyListResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
+    }
 }

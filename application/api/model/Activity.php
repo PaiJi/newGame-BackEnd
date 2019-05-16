@@ -239,4 +239,13 @@ class Activity extends Model
             ];
         }
     }
+
+    public function activityApplyList($activityId)
+    {
+        $queryUserMetaResult = Db::table('ng_activity_meta')->alias('meta')->join('ng_user u', 'meta.user_id = u.id')
+            ->
+            where('activity_id', $activityId)->where('unavailable',0)
+            ->select();
+        return $queryUserMetaResult;
+    }
 }
