@@ -195,7 +195,7 @@ class Club extends Model
             }
             if ($clubJoinMode == '1') {
                 //是填表逻辑
-                echo '加入模式1';
+                //echo '加入模式1';
             }
         }
     }
