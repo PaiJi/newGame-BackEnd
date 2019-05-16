@@ -138,6 +138,16 @@ class Activity extends Model
         }
     }
 
+    public function MyManagerActivity($userId, $clubId)
+    {
+        $queryUserMeta = new UserMeta;
+        $queryUserMetaResult = $queryUserMeta->queryUserMeta($userId, 'clubAdmin', $clubId);
+        if ($queryUserMetaResult['queryResult'] == 1) {
+            $activityResult = Activity::Where('clubid', $clubId)->where('unavailable',0)->select();
+            return $activityResult;
+        }
+    }
+
     public function joinActivity($userId, $activityId)
     {
         $activity = new ActivityMeta;
