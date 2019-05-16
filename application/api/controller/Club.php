@@ -239,4 +239,30 @@ Class Club extends Controller
             return json($result);
         }
     }
+    public function applyContent()
+    {
+        $targetClubId=Request::get('clubId');
+        $applyId=Request::get('applyId');
+        $Club=new \app\api\model\Club();
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $verifyClubAdminResult = $Club->checkUserIsClubAdmin($loginCheck['userId'], $targetClubId);
+            if ($verifyClubAdminResult['isAdmin'] == 1){
+                $result = $Club->applyContent($applyId);
+                return json($result);
+            }else{
+                $result=['getApplyContentResultCode'=>'0','errMsg'=>'您不是该社团管理员'];
+                return json($result);
+            }
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'applyContentResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
+    }
 }

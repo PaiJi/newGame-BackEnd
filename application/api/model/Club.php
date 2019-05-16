@@ -311,4 +311,9 @@ class Club extends Model
         return $applyList;
 
     }
+    public function applyContent($applyId){
+        $applyContent=new ApplyContent();
+        $applyContentResult=$applyContent->where('apply_id',$applyId)->select();
+        return $applyContentResult;
+    }
 }
