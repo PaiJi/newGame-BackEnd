@@ -92,6 +92,15 @@ Class Activity extends Controller
         return json($result);
     }
 
+    public function activityOfClub()
+    {
+        $clubId=Request::get('clubId');
+        $Activity=new \app\api\model\Activity();
+        $result=$Activity->where('clubid',$clubId)->where('unavailable',0)->select();
+        return json($result);
+
+    }
+
     public function activityDetail()
     {
         $Activity = new\app\api\model\Activity();
