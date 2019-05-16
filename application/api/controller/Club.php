@@ -154,6 +154,7 @@ Class Club extends Controller
         }
 
     }
+
     public function exitClub()
     {
 
@@ -166,18 +167,17 @@ Class Club extends Controller
         $result = $club->getClubContact();
         return json($result);
     }
-    public function getQuestion(){
+
+    public function getQuestion()
+    {
         $targetClubId = Request::get('clubId');
-        $list = Question::where('club_id',$targetClubId)
-            ->where('status',1)
+        $list = Question::where('club_id', $targetClubId)
+            ->where('status', 1)
             ->order('sort')
             ->select();
-        //$list=Question::get('135');
         return $list;
     }
-    public function updateQuestion(){
-        $targetClubId=Request::get('clubId');
-        $questionData=Request::post('data');
+
     public function updateQuestion()
     {
         $targetClubId = Request::get('clubId');

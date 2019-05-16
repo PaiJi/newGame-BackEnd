@@ -141,7 +141,7 @@ class Club extends Model
         $userMeta = new UserMeta;
         $queryUserMetaResult = Db::table('ng_user_meta')->alias('meta')->join('club c', 'meta.meta_value = c.id')
             ->
-            where('user_Id',$userId)->where('meta_key','clubAdmin')
+            where('user_Id', $userId)->where('meta_key', 'clubAdmin')
             ->select();
         //$queryUserMetaResult = UserMeta::whereOr([$map1, $map2])->select();
         if ($queryUserMetaResult == null) {
@@ -218,23 +218,17 @@ class Club extends Model
         return $result;
     }
 
-    public function checkUserIsClubAdmin($userId,$clubId)
+    public function checkUserIsClubAdmin($userId, $clubId)
     {
         $userMeta = new UserMeta;
         $queryUserMetaResult = $userMeta->queryUserMeta($userId, 'clubAdmin', $clubId);
         if ($queryUserMetaResult['queryResult'] == 1) {
             return $result = ['isAdmin' => '1'];
-        }
-        else{
-            return $result=['isAdmin'=>'0'];
+        } else {
+            return $result = ['isAdmin' => '0'];
         }
     }
 
-    public function updateQuestion($targetClubId,$questionData){
-        foreach ($questionData as $item)
-        {
-            if($item['type']=='radio'||$item['type']=='checkbox'){
-                $item['answer']=json_encode($item['answer']);
     public function updateQuestion($targetClubId, $questionData)
     {
         foreach ($questionData as $item) {
