@@ -261,5 +261,15 @@ class Club extends Model
         }
 
         return $result=['queryResult'=>'1'];
+    public function getApplyList($clubId){
+        $apply=new Apply();
+        $user=new User();
+        $applyList=$apply->where('club_id',$clubId)->select();
+        foreach ($applyList as $item){
+            $queryResult=$user::where($item['user_id'])->field(['password','last_login','create_time','admin'],true)->find();
+            $item['userInfo']=$queryResult;
+        }
+        return $applyList;
+
     }
 }
