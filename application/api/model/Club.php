@@ -132,8 +132,13 @@ class Club extends Model
     public function getMyClubList($userId)
     {
         $userMeta = new UserMeta;
-        $queryUserMetaResult = $userMeta->queryUserMetaByMultiKey($userId, 'clubMember', 'clubAdmin');
-        return $queryUserMetaResult;
+        $club=new Club();
+        $queryUserMetaResult = $userMeta->where('user_id', $userId)->where('meta_key','clubMember')->select();
+        foreach ($queryUserMetaResult as $item){
+            $clubResult=$club->where('id',$item['meta_value'])->find();
+            $item['clubInfo']=$clubResult;
+        }
+        return $result=['queryResult'=>'1','data'=>$queryUserMetaResult];
     }
 
     public function getMyAdminClubList($userId)
