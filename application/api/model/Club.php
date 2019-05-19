@@ -206,7 +206,7 @@ class Club extends Model
             }
             if ($clubJoinMode == '1') {
                 //是填表逻辑
-                //echo '加入模式1';
+                return $result = ['joinClubResultCode' => '0', 'clubRequest' => '1', 'errMsg' => '请填写表单'];
             }
         }
     }
