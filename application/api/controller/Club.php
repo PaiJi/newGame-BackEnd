@@ -10,6 +10,8 @@ namespace app\api\controller;
 
 //use app\api\model\Apply;
 //use app\api\model\Question;
+//use app\api\model\Apply;
+use app\api\model\Question;
 use think\Controller;
 use think\facade\Session;
 use think\facade\Request;
@@ -172,7 +174,8 @@ Class Club extends Controller
     public function getQuestion()
     {
         $targetClubId = Request::get('clubId');
-        $list = Question::where('club_id', $targetClubId)
+        $question=new Question();
+        $list = $question::where('club_id', $targetClubId)
             ->where('status', 1)
             ->order('sort')
             ->select();
