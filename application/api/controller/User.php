@@ -2,23 +2,39 @@
 
 namespace app\api\controller;
 
+use app\api\model\Setting;
 use think\Controller;
 use think\facade\Request;
 use think\facade\Session;
 
 class User extends Controller
 {
-    protected $beforeActionList = [
-        'disableCorb' => ['except' => 'index']
-    ];
-
-    public function disableCorb()
-    {
-        header("Access-Control-Allow-Origin:*");
-        header("Access-Control-Allow-Methods:GET,POST,PUT,DELETE,OPTIONS");
-        header("Access-Control-Allow-Headers:Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    }
-
+//    protected $beforeActionList = [
+//        'disableCorb' => ['except' => 'index']
+//    ];
+//
+//    public function disableCorb()
+//    {
+//        header("Access-Control-Allow-Origin:*");
+//        header("Access-Control-Allow-Methods:GET,POST,PUT,DELETE,OPTIONS");
+//        header("Access-Control-Allow-Headers:Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+//    }
+//    protected $beforeActionList = [
+//        'checkSystemOnline'
+//    ];
+//
+//    protected function checkSystemOnline()
+//    {
+//        $setting = new Setting();
+//        $status = $setting->checkSystemOnline();
+//        //echo $status;
+//        if ($status == 'true') {
+//
+//        }
+//        if ($status == 'false') {
+//            exit();
+//        }
+//    }
     public function index()
     {
         return '<section><h1>newGame,故事的起点</h1><p>您访问的是newGame API接口，文档访问云雀平台，感谢使用。beta1.0</p></section> <style>section{position:absolute;bottom:50px;right:70px;color:#dedede;text-align:right;}body{background-color:#171717;}</style>';
@@ -51,6 +67,7 @@ class User extends Controller
     public function getUserInfo()
     {
         $userId = Session::get('userId');
+        $parameter = Request::get('origin');
         if ($userId == null) {
             $result = [
                 'loginStatus' => 'false'
@@ -59,7 +76,7 @@ class User extends Controller
         }
         if ($userId) {
             $user = new \app\api\model\User();
-            $userInfo = $user->whoAmI();
+            $userInfo = $user->whoAmI($parameter);
             $result = [
                 'loginStatus' => 'true',
                 'userInfo' => $userInfo
@@ -132,7 +149,9 @@ class User extends Controller
             return json($result);
         }
     }
-    public function updateUserAccountSafeInfo(){
+
+    public function updateUserAccountSafeInfo()
+    {
         $email = Request::post('email');
         $passWord = password_hash(Request::post('password'), PASSWORD_DEFAULT);
         $user = new \app\api\model\User();
@@ -160,5 +179,25 @@ class User extends Controller
             return json($result);
         }
     }
-
+    public function opUser(){
+        $targetUserId=Request::get('userId');
+        $User = new \app\api\model\User();
+        $loginResult = $User->checkLogin();
+        if ($loginResult['loginStatus'] == 0) {
+            return json($loginResult);//未登录用户返回错误json
+        } else {
+            $verifyAdminResult = $User->verifyAdmin($loginResult['userId']);//检查是否是管理员。
+            if ($verifyAdminResult['isAdmin'] == 1) {
+                $result=$User->opUser($targetUserId);
+                if ($result['opResult'] == 1) {
+                    return json($result);//一般返回执行成功json
+                } else {
+                    return json($result);//返回出错的json
+                }
+            } else {
+                $result=['opResult'=>'0','errMsg'=>'权限不足，非法操作'];
+                return json($result);//非管理员返回json
+            }
+        }
+    }
 }

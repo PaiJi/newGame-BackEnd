@@ -198,6 +198,7 @@ class Club extends Model
             if ($clubJoinMode == '3') {
                 //执行加入社团逻辑
                 $joinClubResult = $userMeta->addUserMeta($userId, 'clubMember', $targetClubId);
+                $this->regulatePeople($targetClubId);
                 if ($joinClubResult['addUserMetaResult'] == 1) {
                     return $result = ['joinClubResultCode' => '1', 'clubRequest' => '3', 'errMsg' => ''];
                 } else {
@@ -339,7 +340,7 @@ class Club extends Model
         $user=new User();
         $applyList=$apply->where('club_id',$clubId)->select();
         foreach ($applyList as $item){
-            $queryResult=$user->where($item['user_id'])->field(['password','last_login','create_time','admin'],true)->find();
+            $queryResult=$user->where('id',$item['user_id'])->field(['password','last_login','create_time','admin'],true)->find();
             $item['userInfo']=$queryResult;
         }
         return $applyList;
@@ -352,20 +353,37 @@ class Club extends Model
     }
     public function handleApply($applyId,$handleContent,$userId,$clubId){
         $apply=new Apply();
-        if($handleContent=='true'){
+        //var_dump($handleContent);
+        //var_dump($handleContent==false);
+        if($handleContent==true){
             $apply->save([
                 'status'=>'2'
             ],['id'=>$applyId]);
             $meta=new UserMeta();
             $userMetaResult=$meta->addUserMeta($userId,'clubMember',$clubId);
+            $this->regulatePeople($clubId);
             return $handleApplyResult=['handleApplyResultCode'=>'1'];
         }
-        if($handleContent=='false'){
+        if($handleContent==false){
+            //echo('IAM');
             $apply->save([
                 'status'=>'0'
             ],['id'=>$applyId]);
+            $this->regulatePeople($clubId);
             return $handleApplyResult=['handleApplyResultCode'=>'1'];
         }
         return $handleApplyResult=['handleApplyResultCode'=>'0'];
+    }
+    public function regulatePeople($clubId=1){
+        $clubQuery=new UserMeta();
+        //echo $clubId;
+        $clubQueryResult=$clubQuery->where('meta_key','clubMember')->where('meta_value',$clubId)->count();
+        //echo $clubQueryResult;
+        $queryResult=Db::name('club')->where('id',$clubId)->update(['members'=>$clubQueryResult]);
+        if($queryResult==0){
+            return $result=['queryResult'=>'0','errMsg'=>'社团人数正常，无需校正。'];
+        }else{
+            return $result=['queryResult'=>'1','errMsg'=>''];
+        }
     }
 }

@@ -141,13 +141,17 @@ class Activity extends Model
 
     public function getMyActivityList($userId)
     {
-        $map1 = [
-            ['user_id', '=', $userId]
-        ];
-        $queryUserMetaResult = Db::table('ng_activity_meta')->alias('meta')->join('activity a', 'meta.activity_id = a.id')
-            ->
-            where('user_id', $userId)->where('meta.unavailable', '0')->where('a.unavailable','0')
-            ->select();
+//        $queryUserMetaResult = Db::table('ng_activity_meta')->alias('meta')->join('activity a', 'meta.activity_id = a.id')
+//            ->
+//            where('user_id', $userId)->where('meta.unavailable', '0')->where('a.unavailable','0')
+//            ->select();
+        $queryUserMeta=new ActivityMeta();
+        $activityQuery=new Activity();
+        $queryUserMetaResult=$queryUserMeta->where('user_id',$userId)->where('unavailable',0)->select();
+        foreach ($queryUserMetaResult as $item){
+            $activityResult=$activityQuery->where('id',$item['activity_id'])->find();
+            $item['clubInfo']=$activityResult;
+        }
         if ($queryUserMetaResult == null) {
             return $result = ['queryResult' => '0'];
         } elseif ($queryUserMetaResult) {
@@ -170,7 +174,7 @@ class Activity extends Model
     public function joinActivity($userId, $activityId)
     {
         $activity = new ActivityMeta;
-        $queryResult = Db::table('ng_activity_meta')->where(['user_id' => $userId, 'activity_id' => $activityId])->select();
+        $queryResult = Db::table('ng_activity_meta')->where(['user_id' => $userId, 'activity_id' => $activityId])->where('unavailable',0)->find();
         $activityType=Db::table('ng_activity')->where('id',$activityId)->value('type');
         $targetClubId=Db::table('ng_activity')->where('id',$activityId)->value('clubid');
         $max_people=Db::table('ng_activity')->where('id',$targetClubId)->value('max_people');
@@ -254,7 +258,7 @@ class Activity extends Model
     public function exitActivity($userId, $activityId)
     {
         $activity = new ActivityMeta;
-        $queryResult = Db::table('ng_activity_meta')->where(['user_id' => $userId, 'activity_id' => $activityId])->select();
+        $queryResult = Db::table('ng_activity_meta')->where(['user_id' => $userId, 'activity_id' => $activityId])->where('unavailable',0)->select();
         if ($queryResult) {
             $activity->save([
                 'unavailable' => 1
@@ -339,11 +343,17 @@ class Activity extends Model
             ->select();
         return $queryUserMetaResult;
     }
-    public function regulatePeople($activityId){
+    public function regulatePeople($activityId=1){
         $activityQuery=new ActivityMeta();
         $activityQueryResult=$activityQuery->where('activity_id',$activityId)->where('unavailable','0')->count();
         //$now_people=$this->count($activityQueryResult);
-        Db::name('activity')->where('id',$activityId)->update(['now_people'=>$activityQueryResult]);
+        //echo $activityQueryResult;
+        $queryResult=Db::name('activity')->where('id',$activityId)->update(['now_people'=>$activityQueryResult]);
+        if($queryResult==0){
+            return $result=['queryResult'=>'0','errMsg'=>'活动人数正常，无需校正。'];
+        }else{
+            return $result=['queryResult'=>'1','errMsg'=>''];
+        }
     }
 
 }

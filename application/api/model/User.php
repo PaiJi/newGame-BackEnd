@@ -5,6 +5,7 @@ namespace app\api\model;
 use think\Model;
 use think\facade\Request;
 use think\facade\Session;
+use think\db;
 
 class User extends Model
 {
@@ -142,8 +143,10 @@ class User extends Model
         }
     }
     public function verifyAdmin($userId){
-        $userInfo = User::where('id', $userId)->find();
-        if($userInfo['admin']==1){
+        $user=User::get($userId);
+        $userInfo = $user->getData('admin');
+        //echo $userInfo;
+        if($userInfo==1){
             return $verifyResult=[
                 'isAdmin'=>'1'
             ];
@@ -155,17 +158,35 @@ class User extends Model
             ];
         }
     }
-    public function whoAmI(){
+    public function whoAmI($parameter=false){
         $loginResult=$this->checkLogin();
         if($loginResult['loginStatus']==0){
             return $result=[
                 'LoginStatus'=>'0',
                 'errMsg'=>'您好像没没有登录哦'
             ];
-        }elseif ($loginResult['loginStatus']==1){
-            $userInfo=User::where('id',$loginResult['userId'])->hidden(['password'])->find();
-            return $userInfo;
+        }else{
+            if ($loginResult['loginStatus']==1&&$parameter==false){
+                $userInfo=User::where('id',$loginResult['userId'])->hidden(['password'])->find();
+                return $userInfo;
+            }
+            if($loginResult['loginStatus']==1&&$parameter==true){
+                $userInfo=Db::table('ng_user')->where('id',$loginResult['userId'])->hidden(['password'])->find();
+                return $userInfo;
+            }
         }
+
+    }
+    public function opUser($userId){
+        $user=User::get($userId);
+        $user->admin='1';
+        $result=$user->save();
+        if($result==1){
+            $opResult=['opResult'=>'1'];
+            return $opResult;
+        }else{
+            $opResult=['opResult'=>'0',"errMsg"=>'该用户已经是管理员'];
+        }return $opResult;
 
     }
 }

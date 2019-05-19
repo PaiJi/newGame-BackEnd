@@ -12,21 +12,37 @@ namespace app\api\controller;
 //use app\api\model\Question;
 //use app\api\model\Apply;
 use app\api\model\Question;
+use app\api\model\Setting;
 use think\Controller;
 use think\facade\Session;
 use think\facade\Request;
 
 Class Club extends Controller
 {
+//    protected $beforeActionList = [
+//        'disableCorb' => ['except' => 'index'],
+//        'checkSystemOnline'
+//    ];
+//
+//    public function disableCorb()
+//    {
+//        header("Access-Control-Allow-Origin:*");
+//        header("Access-Control-Allow-Methods:GET,POST,PUT,DELETE,OPTIONS");
+//        header("Access-Control-Allow-Headers:Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+//    }
     protected $beforeActionList = [
-        'disableCorb' => ['except' => 'index']
+        'checkSystemOnline'
     ];
+    protected function checkSystemOnline(){
+        $setting=new Setting();
+        $status=$setting->checkSystemOnline();
+        //echo $status;
+        if($status=='true'){
 
-    public function disableCorb()
-    {
-        header("Access-Control-Allow-Origin:*");
-        header("Access-Control-Allow-Methods:GET,POST,PUT,DELETE,OPTIONS");
-        header("Access-Control-Allow-Headers:Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        }
+        if($status=='false'){
+            exit();
+        }
     }
 
     public function addClub()
@@ -296,6 +312,7 @@ Class Club extends Controller
     {
         $applyId=Request::get('applyId');
         $handleContent=Request::post('handleContent');
+        //var_dump($handleContent);
         $Club=new \app\api\model\Club();
         $apply=new \app\api\model\Apply();
         $targetClubId=$apply->where('id',$applyId)->value('club_id');
@@ -322,6 +339,35 @@ Class Club extends Controller
         if ($loginCheck['loginStatus'] == '0') {
             $result = [
                 'handleApplyResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
+    }
+    public function regulatePeople(){
+        $targetClubId = Request::get("clubId");
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+
+        if ($loginCheck['loginStatus'] == '1') {
+            $adminCheck=$userStatus->verifyAdmin($loginCheck['userId']);
+            if($adminCheck['isAdmin']==1){
+                $club = new \app\api\model\Club();
+                $result = $club->regulatePeople($targetClubId);
+                return json($result);
+            }else{
+                $result = [
+                    'regulatePeopleResultCode' => '0',
+                    'code' => '0',
+                    'errMsg' => '非管理员不得执行此操作'
+                ];
+                return json($result);
+            }
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'regulatePeopletResultCode' => '0',
                 'code' => '42',
                 'errMsg' => '请先登录'
             ];

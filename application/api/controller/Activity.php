@@ -2,12 +2,28 @@
 
 namespace app\api\controller;
 
+use app\api\model\Setting;
 use think\Controller;
 use think\facade\Session;
 use think\facade\Request;
 
 Class Activity extends Controller
 {
+    protected $beforeActionList = [
+        'checkSystemOnline'
+    ];
+    protected function checkSystemOnline(){
+        $setting=new Setting();
+        $status=$setting->checkSystemOnline();
+        //echo $status;
+        if($status=='true'){
+
+        }
+        if($status=='false'){
+            exit();
+        }
+
+    }
     public function addActivity()
     {
         //此处应该有判空检测
@@ -236,11 +252,41 @@ Class Activity extends Controller
         };
         if ($loginCheck['loginStatus'] == '0') {
             $result = [
-                'getActivityApplyListResultCode' => '0',
+                'getActivityCheckinListResultCode' => '0',
                 'code' => '42',
                 'errMsg' => '请先登录'
             ];
             return json($result);
         }
     }
+    public function regulatePeople(){
+        $targetActivityId = Request::get("activityId");
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+
+        if ($loginCheck['loginStatus'] == '1') {
+            $adminCheck=$userStatus->verifyAdmin($loginCheck['userId']);
+            if($adminCheck['isAdmin']==1){
+                $Activity = new \app\api\model\Activity();
+                $result = $Activity->regulatePeople($targetActivityId);
+                return json($result);
+            }else{
+                $result = [
+                    'regulatePeopleResultCode' => '0',
+                    'code' => '0',
+                    'errMsg' => '非管理员不得执行此操作'
+                ];
+                return json($result);
+            }
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'regulatePeopletResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
+    }
+
 }
