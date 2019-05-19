@@ -10,6 +10,21 @@ use think\Db;
 
 class Activity extends Model
 {
+    public function getStatusAttr($value)
+    {
+        $status = [0 => '未开始', 1 => '报名中', 2 => '已结束'];
+        return $status[$value];
+    }
+    public function getTypeAttr($value)
+    {
+        $status = [0 => '未选择', 1 => '社内活动', 2 => '公开活动'];
+        return $status[$value];
+    }
+    public function getEnableCheckinAttr($value)
+    {
+        $status = [0 => '关闭', 1 => '开启'];
+        return $status[$value];
+    }
     public function addActivity($createUserId, $clubId)
     {
         $activityName = Request::post('activityName');
