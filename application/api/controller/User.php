@@ -74,6 +74,49 @@ class User extends Controller
                 'errMsg'=>'注销成功！'
             ];
              return json($result);
+    public function updateInfo()
+    {
+        $phone = Request::post('phone');
+        $gender = Request::post('gender');
+        $realName = Request::post('realname');
+        $nickname = Request::post('nickname');
+        $age = Request::post('age');
+        $qq = Request::post('qq');
+        $wechat = Request::post('wechat');
+        $department = Request::post('department');
+        $major = Request::post('major');
+        $user = new \app\api\model\User();
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $updateResult = $user->save([
+                'gender' => $gender,
+                'age' => $age,
+                'phone' => $phone,
+                'qq' => $qq,
+                'wechat' => $wechat,
+                'department' => $department,
+                'major' => $major,
+                'username' => $realName,
+                'nickname' => $nickname
+            ], ['id' => $loginCheck['userId']]);
+            if ($updateResult == 1) {
+                $result = ['updateInfoResultCode' => '1',
+                    'errMsg' => ''];
+                return json($result);
+            } else {
+                $result = ['updateInfoResultCode' => '0',
+                    'errMsg' => '本次操作失败，最大的可能是userID未获取'];
+                return json($result);
+            }
+        }
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = ['updateInfoResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'];
+            return json($result);
+        }
+    }
         }
     }
 }
