@@ -339,4 +339,11 @@ class Activity extends Model
             ->select();
         return $queryUserMetaResult;
     }
+    public function regulatePeople($activityId){
+        $activityQuery=new ActivityMeta();
+        $activityQueryResult=$activityQuery->where('activity_id',$activityId)->where('unavailable','0')->count();
+        //$now_people=$this->count($activityQueryResult);
+        Db::name('activity')->where('id',$activityId)->update(['now_people'=>$activityQueryResult]);
+    }
+
 }
