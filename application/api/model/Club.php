@@ -17,7 +17,18 @@ class Club extends Model
 
     public function getStatusAttr($value)
     {
-        $status = [0 => '已注销', 1 => '正常运营', 2 => '筹备中', 3 => '运营异常'];
+        $status = [0 => '未选择', 1 => '正常运营', 2 => '筹备中', 3 => '运营异常'];
+        return $status[$value];
+    }
+
+    public function getBelongAttr($value)
+    {
+        $status = [0 => '已注销', 1 => '智能与电子学院', 2 => '校社联', 3 => '运营异常'];
+        return $status[$value];
+    }
+    public function getSortAttr($value)
+    {
+        $status = [0=>'未选择',1 => '技术类', 2 => '娱乐类'];
         return $status[$value];
     }
 
