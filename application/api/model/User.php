@@ -53,6 +53,11 @@ class User extends Model
         $gender = Request::post('gender');
         $realName = Request::post('realname');
         $nickname = Request::post('nickname');
+        $age=Request::post('age');
+        $qq=Request::post('qq');
+        $wechat=Request::post('wechat');
+        $department=Request::post('department');
+        $major=Request::post('major');
 
         $validate = new \app\api\validate\User();
         if (!$validate->scene('registerCheck')->check(['email' => $email, 'password' => $passWord, 'nickname' => $nickname, 'realname' => $realName, 'phone' => $phone, 'gender' => $gender])) {
@@ -77,7 +82,12 @@ class User extends Model
                     'password' => $passWord,
                     'email' => $email,
                     'gender' => $gender,
-                    'phone' => $phone
+                    'phone' => $phone,
+                    'age'=>$age,
+                    'qq'=>$qq,
+                    'wechat'=>$wechat,
+                    'department'=>$department,
+                    'major'=>$major
                 ]);
                 if ($dbinsertResult == 1) {
                     return $registerResult = [
