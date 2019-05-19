@@ -215,7 +215,7 @@ class Club extends Model
     {
         $targetClubId = Request::get('clubid');
         $club = $this->get($targetClubId);
-        $club = UserMeta::where('meta_value', $targetClubId)->select();
+        $club = UserMeta::where('meta_value', $targetClubId)->where('meta_key','clubMember')->select();
         $result = [];
         foreach ($club as $item) {
             //var_dump($item->user->hidden(['user'=>['username','phone','email']])->toArray()) ;
