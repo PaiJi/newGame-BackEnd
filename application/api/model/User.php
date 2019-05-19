@@ -8,6 +8,27 @@ use think\facade\Session;
 
 class User extends Model
 {
+    public function getAdminAttr($value)
+    {
+        $status = [0 => '普通用户', 1 => '系统管理员'];
+        return $status[$value];
+    }
+    public function getGenderAttr($value)
+    {
+        $status = ['boy' => '男', 'girl' => '女'];
+        return $status[$value];
+    }
+    public function getDepartmentAttr($value)
+    {
+
+        $status = [0 => '未选择', 1 => '智能与电子工程学院',2=>'计算机与软件学院',3=>'信息与商务管理学院',4=>'数字艺术与设计学院',5=>'外国语学院',6=>'健康医疗科技学院',7=>'高等职业技术学院',8=>'国际教育学院',9=>'继续教育学院'];
+        return $status[$value];
+    }
+    public function getMajorAttr($value)
+    {
+        $status = [0 => '未选择', 1 => '电子信息工程'];
+        return $status[$value];
+    }
     public function login()
     {
         $email = Request::post('email');
