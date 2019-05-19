@@ -170,22 +170,84 @@ class Activity extends Model
     public function joinActivity($userId, $activityId)
     {
         $activity = new ActivityMeta;
-        //$queryResult=$activity->where(['user_id'])
         $queryResult = Db::table('ng_activity_meta')->where(['user_id' => $userId, 'activity_id' => $activityId])->select();
+        $activityType=Db::table('ng_activity')->where('id',$activityId)->value('type');
+        $targetClubId=Db::table('ng_activity')->where('id',$activityId)->value('clubid');
+        $max_people=Db::table('ng_activity')->where('id',$targetClubId)->value('max_people');
+        $now_people=Db::table('ng_activity')->where('id',$targetClubId)->value('now_people');
+        $userQuery=new UserMeta();
+        $userQueryResult=$userQuery->queryUserMeta($userId,'clubMember',$targetClubId);
         if ($queryResult) {
             return $result = [
                 'queryResult' => '0',
                 'errMsg' => '您已加入该活动！'
             ];
         } else {
-            $activity->save([
-                'user_id' => $userId,
-                'activity_id' => $activityId
-            ]);
-            return $result = [
-                'queryResult' => '1',
-                'errMsg' => ''
-            ];
+            if($activityType==1&&$userQueryResult['queryResult']==1){
+                //活动是私有的时候检查权限
+                if($max_people==0){
+                    $activity->save([
+                        'user_id' => $userId,
+                        'activity_id' => $activityId
+                    ]);
+                    $this->regulatePeople($activityId);
+                    return $result = [
+                        'queryResult' => '1',
+                        'errMsg' => ''
+                    ];
+                }
+                $leftNum=$max_people-$now_people;
+                if($leftNum>=1){
+                    $activity->save([
+                        'user_id' => $userId,
+                        'activity_id' => $activityId
+                    ]);
+                    $this->regulatePeople($activityId);
+                    return $result = [
+                        'queryResult' => '1',
+                        'errMsg' => ''
+                    ];
+                }else{
+                    return $result = [
+                        'queryResult' => '0',
+                        'errMsg' => '活动报名人数已满'
+                    ];
+                }
+            }
+            if($activityType==2){
+                if($max_people==0){
+                    $activity->save([
+                        'user_id' => $userId,
+                        'activity_id' => $activityId
+                    ]);
+                    $this->regulatePeople($activityId);
+                    return $result = [
+                        'queryResult' => '1',
+                        'errMsg' => ''
+                    ];
+                }
+                $leftNum=$max_people-$now_people;
+                if($leftNum>=1){
+                    $activity->save([
+                        'user_id' => $userId,
+                        'activity_id' => $activityId
+                    ]);
+                    $this->regulatePeople($activityId);
+                    return $result = [
+                        'queryResult' => '1',
+                        'errMsg' => ''
+                    ];
+                }else{
+                    return $result = [
+                        'queryResult' => '0',
+                        'errMsg' => '活动报名人数已满'
+                    ];
+                }
+            }
+                return $result = [
+                    'queryResult' => '0',
+                    'errMsg' => '这是一个社团私有活动，请先加入社团才能加入该活动'
+                    ];
         }
     }
 
