@@ -275,15 +275,23 @@ Class Club extends Controller
         $applyId=Request::get('applyId');
         $handleContent=Request::post('handleContent');
         $Club=new \app\api\model\Club();
-        $apply=new Apply();
+        $apply=new \app\api\model\Apply();
         $targetClubId=$apply->where('id',$applyId)->value('club_id');
+        $targetUserId=$apply->where('id',$applyId)->value('user_id');
+        $applyStatus=$apply->where('id',$applyId)->value('status');
         $userStatus = new \app\api\model\User();
         $loginCheck = $userStatus->checkLogin();
         if ($loginCheck['loginStatus'] == '1') {
             $verifyClubAdminResult = $Club->checkUserIsClubAdmin($loginCheck['userId'], $targetClubId);
             if ($verifyClubAdminResult['isAdmin'] == 1){
-                $result = $Club->handleApply($applyId,$handleContent,$loginCheck['userId'], $targetClubId);
-                return json($result);
+                if($applyStatus==1){
+                    $result = $Club->handleApply($applyId,$handleContent,$targetUserId, $targetClubId);
+                    return json($result);
+                }else{
+                    $result=['handleApplyResultCode'=>'0','errMsg'=>'该申请已处理过'];
+                    return json($result);
+                }
+
             }else{
                 $result=['handleApplyResultCode'=>'0','errMsg'=>'您不是该社团管理员'];
                 return json($result);
