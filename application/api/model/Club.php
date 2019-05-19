@@ -340,7 +340,7 @@ class Club extends Model
                 'status'=>'2'
             ],['id'=>$applyId]);
             $meta=new UserMeta();
-            $meta->addUserMeta($userId,'clubMember',$clubId);
+            $userMetaResult=$meta->addUserMeta($userId,'clubMember',$clubId);
             return $handleApplyResult=['handleApplyResultCode'=>'1'];
         }
         if($handleContent=='false'){
