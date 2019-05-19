@@ -277,6 +277,23 @@ class Club extends Model
 
         return $result = ['queryResult' => '1'];
     }
+    public function deleteQuestion($questionId){
+        $question=new Question();
+        $questionQuery=$question::get($questionId);
+
+        if($questionQuery){
+            $questionDeleteResult=$questionQuery->delete();
+            if($questionDeleteResult==1){
+                return $result = ['DeleteQuestionResultCode' => '1', 'errMsg' => ''];
+            }
+            else{
+                return $result = ['DeleteQuestionResultCode' => '0', 'errMsg' => '对应的问题未找到，可能已被删除'];
+            }
+        }else{
+            return $result = ['DeleteQuestionResultCode' => '0', 'errMsg' => '对应的问题未找到，可能已被删除'];
+        }
+
+    }
 
     public function submitApplyForm($userId, $targetClubId, $applyForm)
     {
@@ -322,7 +339,7 @@ class Club extends Model
         $user=new User();
         $applyList=$apply->where('club_id',$clubId)->select();
         foreach ($applyList as $item){
-            $queryResult=$user::where($item['user_id'])->field(['password','last_login','create_time','admin'],true)->find();
+            $queryResult=$user->where($item['user_id'])->field(['password','last_login','create_time','admin'],true)->find();
             $item['userInfo']=$queryResult;
         }
         return $applyList;

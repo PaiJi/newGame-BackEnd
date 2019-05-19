@@ -202,6 +202,25 @@ Class Club extends Controller
             return json($result);
         }
     }
+    public function deleteQuestion(){
+        $targetClubId = Request::get('clubId');
+        $questionId = Request::post('questionId');
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $club = new \app\api\model\Club();
+            $result = $club->deleteQuestion($questionId);
+            return json($result);
+        };
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = [
+                'deleteQuestionResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'
+            ];
+            return json($result);
+        }
+    }
     public function submitApplyForm()
     {
         $targetClubId = Request::get('clubId');
