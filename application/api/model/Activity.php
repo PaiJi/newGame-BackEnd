@@ -146,7 +146,7 @@ class Activity extends Model
         ];
         $queryUserMetaResult = Db::table('ng_activity_meta')->alias('meta')->join('activity a', 'meta.activity_id = a.id')
             ->
-            where('user_id', $userId)->where('meta.unavailable', '0')
+            where('user_id', $userId)->where('meta.unavailable', '0')->where('a.unavailable','0')
             ->select();
         if ($queryUserMetaResult == null) {
             return $result = ['queryResult' => '0'];
@@ -259,6 +259,7 @@ class Activity extends Model
             $activity->save([
                 'unavailable' => 1
             ], ['id' => $queryResult['0']['id']]);
+            $this->regulatePeople($activityId);
             return $result = [
                 'queryResult' => '1',
                 'errMsg' => '您已退出该活动！'
