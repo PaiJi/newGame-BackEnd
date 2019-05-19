@@ -117,6 +117,33 @@ class User extends Controller
             return json($result);
         }
     }
+    public function updateUserAccountSafeInfo(){
+        $email = Request::post('email');
+        $passWord = password_hash(Request::post('password'), PASSWORD_DEFAULT);
+        $user = new \app\api\model\User();
+        $userStatus = new \app\api\model\User();
+        $loginCheck = $userStatus->checkLogin();
+        if ($loginCheck['loginStatus'] == '1') {
+            $updateResult = $user->save([
+                'email' => $email,
+                'password' => $passWord
+            ], ['id' => $loginCheck['userId']]);
+            if ($updateResult == 1) {
+                $result = ['updateInfoResultCode' => '1',
+                    'errMsg' => ''];
+                return json($result);
+            } else {
+                $result = ['updateInfoResultCode' => '0',
+                    'errMsg' => '本次操作失败，最大的可能是userID未获取'];
+                return json($result);
+            }
+        }
+        if ($loginCheck['loginStatus'] == '0') {
+            $result = ['updateInfoResultCode' => '0',
+                'code' => '42',
+                'errMsg' => '请先登录'];
+            return json($result);
         }
     }
+
 }
